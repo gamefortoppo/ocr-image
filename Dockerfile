@@ -1,12 +1,13 @@
-FROM python:3.10-slim
+FROM python:3.10
 
 WORKDIR /app
 
-# 🔥 FIX QUAN TRỌNG: libgomp cho Paddle
+# System libs bắt buộc cho Paddle / OpenMP / OCR
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
     libgomp1 \
+    libstdc++6 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
