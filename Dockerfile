@@ -1,22 +1,21 @@
-FROM python:3.10
+FROM python:3.10-slim
+
+# Cài Tesseract + language packs
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-vie \
+    tesseract-ocr-jpn \
+    libgl1 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# System libs bắt buộc cho Paddle / OpenMP / OCR
-RUN apt-get update && apt-get install -y \
-    libgl1 \
-    libglib2.0-0 \
-    libgomp1 \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip install --upgrade pip
-
 COPY requirements.txt .
-
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
 
-EXPOSE 8000
+EXPOSE 10000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "10000"]
