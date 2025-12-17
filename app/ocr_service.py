@@ -1,15 +1,13 @@
-from PIL import Image
 import pytesseract
+from PIL import Image
 
 LANG = "eng+vie+jpn"
 
-def run_ocr(image_bytes):
-    image = Image.open(image_bytes).convert("RGB")
-
+def run_ocr(image: Image.Image):
     data = pytesseract.image_to_data(
         image,
         lang=LANG,
-        config="--oem 3 --psm 6",
+        config="--oem 3 --psm 11",
         output_type=pytesseract.Output.DICT
     )
 
