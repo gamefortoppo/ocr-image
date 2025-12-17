@@ -1,6 +1,5 @@
 from PIL import Image
 import pytesseract
-import pandas as pd
 
 LANG = "eng+vie+jpn"
 
@@ -11,26 +10,29 @@ def run_ocr(image_bytes):
         image,
         lang=LANG,
         config="--oem 3 --psm 6",
-        output_type=pytesseract.Output.DATAFRAME
+        output_type=pytesseract.Output.DICT
     )
 
     results = []
 
-    for _, row in data.iterrows():
-        text = str(row["text"]).strip()
+    n = len(data["text"])
 
-        if not text or row["conf"] < 0:
+    for i in range(n):
+        text = data["text"][i].strip()
+        conf = int(data["conf"][i])
+
+        if not text or conf < 0:
             continue
 
-        x1 = int(row["left"])
-        y1 = int(row["top"])
-        x2 = x1 + int(row["width"])
-        y2 = y1 + int(row["height"])
+        x1 = int(data["left"][i])
+        y1 = int(data["top"][i])
+        x2 = x1 + int(data["width"][i])
+        y2 = y1 + int(data["height"][i])
 
         results.append({
             "text": text,
             "box_2d": [x1, y1, x2, y2],
-            "confidence": float(row["conf"])
+            "confidence": conf
         })
 
     return results
