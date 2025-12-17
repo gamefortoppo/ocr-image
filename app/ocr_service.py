@@ -4,9 +4,18 @@ import cv2
 
 # Load model 1 lần duy nhất
 ocr = PaddleOCR(
-    lang="japan",          # ✅ EN + VI + JP
-    use_angle_cls=False,   # UI & document không cần rotate
-    device="cpu"
+    lang="japan",              # ja + en OK
+    use_angle_cls=False,       # ❌ bỏ classifier
+    use_space_char=True,
+    show_log=False,
+
+    # 🔥 QUAN TRỌNG
+    enable_mkldnn=False,       # giảm RAM
+    det_model_dir=None,        # dùng default lite
+    rec_model_dir=None,
+
+    # ❌ TUYỆT ĐỐI KHÔNG bật structure
+    use_gpu=False
 )
 
 def run_ocr(image_bytes: bytes):
