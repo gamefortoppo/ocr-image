@@ -1,12 +1,34 @@
 import pytesseract
 from PIL import Image
 
-LANG = "eng+vie+jpn"
+LANG_MAP = {
+    "en": "eng",
+    "vi": "vie",
+    "ja": "jpn"
+}
 
-def run_ocr(image: Image.Image):
+DEFAULT_LANG = "eng+vie+jpn"
+
+
+def resolve_language(lang_param: str | None) -> str:
+    """
+    Convert query param to tesseract language string
+    """
+    if not lang_param:
+        return DEFAULT_LANG
+
+    langs = []
+    for l in lang_param.split(","):
+        l = l.strip().lower()
+        if l in LANG_MAP:
+            langs.append(LANG_MAP[l])
+
+    return "+".join(langs) if langs else DEFAULT_LANG
+
+def run_ocr(image: Image.Image, lang: str):
     data = pytesseract.image_to_data(
         image,
-        lang=LANG,
+        lang=lang,
         config="--oem 3 --psm 11",
         output_type=pytesseract.Output.DICT
     )
